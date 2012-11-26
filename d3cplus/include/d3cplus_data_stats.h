@@ -1,0 +1,4 @@
+#ifndef D3CPLUS_DATA_STATS_H
+#define D3CPLUS_DATA_STATS_H
+
+#endif // D3CPLUS_DATA_STATS_H

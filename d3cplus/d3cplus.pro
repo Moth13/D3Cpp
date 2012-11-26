@@ -32,16 +32,30 @@ INCLUDEPATH     += include
 
 # include qjson dependences
 INCLUDEPATH     += ./resources/include
+INCLUDEPATH     += $$INSTALL_DIR/include/
 DEPENDPATH      += ./resources/lib
 LIBS            += -L./resources/lib -lqjson
 
 HEADERS += \
     include/d3cplus_data.h \
-    include/d3cplus_engine.h
+    include/d3cplus_engine.h \
+    include/d3cplus_data_hero.h \
+    include/d3cplus_data_career.h \
+    include/d3cplus_data_stats.h \
+    include/d3cplus_data_artisan.h \
+    include/d3cplus_data_quest.h \
+    include/d3cplus_data_act.h \
+    include/d3cplus_data_progression.h
 
 SOURCES += \
     src/d3cplus_data.cpp \
-    src/d3cplus_engine.cpp
+    src/d3cplus_engine.cpp \
+    src/d3cplus_data_hero.cpp \
+    src/d3cplus_data_career.cpp \
+    src/d3cplus_data_stats.cpp \
+    src/d3cplus_data_artisan.cpp \
+    src/d3cplus_data_quest.cpp \
+    src/d3cplus_data_act.cpp
 
 
 target_lib.files= ./resources/lib/*.so*
@@ -51,4 +65,21 @@ target_inc.files+= ./include/*
 target_inc.path = $$INSTALL_DIR/include/
 INSTALLS        += target_lib
 INSTALLS        += target_inc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

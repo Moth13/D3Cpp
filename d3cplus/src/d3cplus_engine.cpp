@@ -4,7 +4,9 @@
 #include <resources/include/qobjecthelper.h>
 #include <resources/include/serializer.h>
 
-#include <d3cplus_data.h>
+#include <d3cplus_data_career.h>
+#include <d3cplus_data_hero.h>
+#include <d3cplus_data_stats.h>
 
 namespace d3cplus
 {

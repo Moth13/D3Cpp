@@ -8,11 +8,11 @@
 
 namespace d3cplus
 {
-//    namespace Data
-//    {
-//        class D3_Career;
-//        class D3_Heroes;
-//    }
+    namespace Data
+    {
+        class D3_Career;
+        class D3_Hero;
+    }
 
     typedef QPair< uint, int > PQT;
 
@@ -43,9 +43,9 @@ namespace d3cplus
             //------------------------------------------------------//
             // Signals
             /*! */
-            void sigCareerProfileFound( uint _uiQueryID, Data::D3_Career _pD3Career );
+            void sigCareerProfileFound( uint _uiQueryID, Data::D3_Career* _pD3Career );
             /*! */
-            void sigHeroesInfoFound( uint _uiQueryID, Data::D3_Hero _pD3Hereos );
+            void sigHeroesInfoFound( uint _uiQueryID, Data::D3_Hero* _pD3Hereos );
             //------------------------------------------------------//
 
         private :
