@@ -2,6 +2,7 @@
 
 #include <d3cplus_data_hero.h>
 #include <d3cplus_data_artisan.h>
+#include <d3cplus_data_progression.h>
 
 #include <resources/include/parser.h>
 #include <resources/include/qobjecthelper.h>
@@ -11,16 +12,30 @@ namespace d3cplus
     namespace Data
     {
         //----------------------------------//
-        D3_Career::D3_Career( QObject* parent ) : D3_Data( parent ){ m_strClassName = "D3_Career"; }
-        D3_Career::D3_Career( const D3_Career& _rD3_Career ) : D3_Data( _rD3_Career.parent() )
+        D3_Career::D3_Career( QObject* parent )
+            :   D3_Data                 ( parent )
+            ,   m_pSoftcoreProgression  ( NULL )
+            ,   m_pHardcoreProgression  ( NULL )
+        {
+            m_strClassName = "D3_Career";
+        }
+
+        D3_Career::D3_Career( const D3_Career& _rD3_Career )
+            :   D3_Data                 ( _rD3_Career.parent() )
+            ,   m_pSoftcoreProgression  ( NULL )
+            ,   m_pHardcoreProgression  ( NULL )
         {
             m_strClassName  = "D3_Career";
         }
+
         D3_Career::~D3_Career()
         {
             clearHero();
             clearSoftcoreArtisans();
             clearHardcoreArtisans();
+
+            delete m_pSoftcoreProgression;
+            delete m_pHardcoreProgression;
         }
         //----------------------------------//
 
@@ -63,6 +78,29 @@ namespace d3cplus
                 m_lpHardcoreArtisans.push_back( pArtisan );
             }
         }
+
+        void D3_Career::setSoftcoreProgression( QVariant _lSoftcoreProgression )
+        {
+            if( NULL != m_pSoftcoreProgression )
+            {
+                delete m_pSoftcoreProgression;
+            }
+
+            m_pSoftcoreProgression = new D3_Progression();
+            QJson::QObjectHelper::qvariant2qobject( _lSoftcoreProgression.toMap(), m_pSoftcoreProgression );
+        }
+
+        void D3_Career::setHardcoreProgression( QVariant _lHardcoreProgression )
+        {
+            if( NULL != m_pHardcoreProgression )
+            {
+                delete m_pHardcoreProgression;
+            }
+
+            m_pHardcoreProgression = new D3_Progression();
+            QJson::QObjectHelper::qvariant2qobject( _lHardcoreProgression.toMap(), m_pHardcoreProgression );
+        }
+
         //----------------------------------//
 
         //----------------------------------//
@@ -100,6 +138,18 @@ namespace d3cplus
             return QVariant::fromValue( lArtisans );
         }
 
+        D3_Progression* D3_Career::getSoftcoreProgression() const { return m_pSoftcoreProgression; }
+        QVariant D3_Career::getSoftcoreProgressionAsQVariant() const
+        {
+            return QVariant::fromValue( *m_pSoftcoreProgression );
+        }
+
+        D3_Progression* D3_Career::getHardcoreProgression() const { return m_pHardcoreProgression; }
+        QVariant D3_Career::getHardcoreProgressionAsQVariant() const
+        {
+            return QVariant::fromValue( *m_pHardcoreProgression );
+        }
+
         const QString& D3_Career::getBattleTag() const { return m_strBattleTag; }
         //----------------------------------//
 
@@ -129,6 +179,14 @@ namespace d3cplus
             {
                 strReturn += "\n\t" + pArtisan->toString() + ";";
             }
+            strReturn   += "\n}";
+
+            strReturn   += "\nProgression : \n{ ";
+            strReturn   += m_pSoftcoreProgression->toString();
+            strReturn   += "\n}";
+
+            strReturn   += "\nHardcoreProgression : \n{ ";
+            strReturn   += m_pHardcoreProgression->toString();
             strReturn   += "\n}";
 
             return strReturn;

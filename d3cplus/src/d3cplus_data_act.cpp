@@ -14,7 +14,11 @@ namespace d3cplus
         {
             m_strClassName  = "D3_Act";
         }
-        D3_Act::~D3_Act(){}
+
+        D3_Act::~D3_Act()
+        {
+            clearCompletedQuests();
+        }
 
         // setFunction
         void D3_Act::setIsCompleted( bool _bIsCompleted ) { m_bIsCompleted  = _bIsCompleted; }
@@ -80,7 +84,6 @@ namespace d3cplus
                 m_lpCompletedQuests.takeLast();
             }
         }
-
         //----------------------------------//
     }
 }

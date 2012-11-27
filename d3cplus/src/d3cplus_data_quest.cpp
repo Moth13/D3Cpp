@@ -25,9 +25,10 @@ namespace d3cplus
         bool D3_Quest::isValid() const { return !m_strSlug.isEmpty(); }
         QString D3_Quest::toString() const
         {
-            QString strReturn;
+            QString strReturn ="\n{ ";
             strReturn += m_strSlug;
-            strReturn += "; " + m_strName;
+            strReturn += ";\n " + m_strName;
+            strReturn += ";\n}";
 
             return strReturn;
         }

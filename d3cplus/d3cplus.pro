@@ -45,7 +45,10 @@ HEADERS += \
     include/d3cplus_data_artisan.h \
     include/d3cplus_data_quest.h \
     include/d3cplus_data_act.h \
-    include/d3cplus_data_progression.h
+    include/d3cplus_data_progression.h \
+    include/d3cplus_data_difficulty.h \
+    include/d3cplus_data_skill.h \
+    include/d3cplus_data_skill_container.h
 
 SOURCES += \
     src/d3cplus_data.cpp \
@@ -55,7 +58,11 @@ SOURCES += \
     src/d3cplus_data_stats.cpp \
     src/d3cplus_data_artisan.cpp \
     src/d3cplus_data_quest.cpp \
-    src/d3cplus_data_act.cpp
+    src/d3cplus_data_act.cpp \
+    src/d3cplus_data_difficulty.cpp \
+    src/d3cplus_data_progression.cpp \
+    src/d3cplus_data_skill.cpp \
+    src/d3cplus_data_skill_container.cpp
 
 
 target_lib.files= ./resources/lib/*.so*
@@ -65,6 +72,17 @@ target_inc.files+= ./include/*
 target_inc.path = $$INSTALL_DIR/include/
 INSTALLS        += target_lib
 INSTALLS        += target_inc
+
+
+
+
+
+
+
+
+
+
+
 
 
 

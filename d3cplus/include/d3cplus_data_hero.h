@@ -7,6 +7,8 @@ namespace d3cplus
 {
     namespace Data
     {
+        class D3_Skill_Container;
+
         /*! \class*/
         class D3_Hero: public D3_Data
         {
@@ -20,6 +22,7 @@ namespace d3cplus
                 Q_PROPERTY(bool dead READ getDead WRITE setDead)
                 Q_PROPERTY(QString class READ getClass WRITE setClass)
                 Q_PROPERTY(int lastUpdated READ getLastUpdate WRITE setLastUpdate)
+                Q_PROPERTY(QVariant skills READ getSkillContainerAsQVariant WRITE setSkillContainer )
 
             public:
                 explicit D3_Hero( QObject* parent = NULL );
@@ -36,6 +39,7 @@ namespace d3cplus
                 void setDead( bool _bDead );
                 void setClass( const QString& _rstrClass );
                 void setLastUpdate( int _iLastUpdated );
+                void setSkillContainer( QVariant _skills );
 
                 // getFunction
                 const QString& getName() const;
@@ -47,6 +51,8 @@ namespace d3cplus
                 bool getDead() const;
                 const QString& getClass() const;
                 int getLastUpdate() const;
+                QVariant getSkillContainerAsQVariant() const;
+                const D3_Skill_Container&  getSkillContainer() const;
 
                 // tools
                 virtual bool isValid() const;
@@ -64,6 +70,7 @@ namespace d3cplus
                 QString m_strClass;
                 int     m_iLastUpdated;
                 bool    m_bDead;
+                D3_Skill_Container* m_pSkillContainer;
         };
     }
 }
