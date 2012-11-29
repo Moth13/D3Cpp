@@ -31,7 +31,7 @@ namespace d3cplus
                 D3_Skill* pSkill = new D3_Skill();
                 D3_Skill* pRune = new D3_Skill();
                 QJson::QObjectHelper::qvariant2qobject( vActiveSkill.toMap()[ "skill" ].toMap(), pSkill );
-                QJson::QObjectHelper::qvariant2qobject( vActiveSkill.toMap()[ "reun" ].toMap(), pRune );
+                QJson::QObjectHelper::qvariant2qobject( vActiveSkill.toMap()[ "rune" ].toMap(), pRune );
 
                 m_lpActiveSkills.push_back( D3_ActiveSkill( pSkill, pRune ) );
             }
@@ -43,7 +43,7 @@ namespace d3cplus
             foreach( QVariant vPassiveSkill, _passiveSkills.toList() )
             {
                 D3_Skill* pPassiveSkill = new D3_Skill();
-                QJson::QObjectHelper::qvariant2qobject( vPassiveSkill.toMap(), pPassiveSkill );
+                QJson::QObjectHelper::qvariant2qobject( vPassiveSkill.toMap()[ "skill" ].toMap(), pPassiveSkill );
 
                 m_lpPassiveSkills.push_back( pPassiveSkill );
             }
@@ -56,9 +56,9 @@ namespace d3cplus
             QList< QVariant > lActiveSkills;
             foreach( D3_ActiveSkill activeSkills, m_lpActiveSkills )
             {
-                QList< QVariant > lSkills;
-                lSkills.push_back( QVariant::fromValue( *activeSkills.first ) );
-                lSkills.push_back( QVariant::fromValue( *activeSkills.second ) );
+                QMap< QString, QVariant > lSkills;
+                lSkills.insert( "skill", QVariant::fromValue( *activeSkills.first ) );
+                lSkills.insert( "rune", QVariant::fromValue( *activeSkills.second ) );
                 lActiveSkills.push_back( QVariant::fromValue( lSkills ) );
             }
             return QVariant::fromValue( lActiveSkills );
@@ -70,7 +70,9 @@ namespace d3cplus
             QList< QVariant > lPassiveSkills;
             foreach( D3_Skill* pSkills, m_lpPassiveSkills )
             {
-                lPassiveSkills.push_back( QVariant::fromValue( *pSkills) );
+                QMap< QString, QVariant > lSkills;
+                lSkills.insert( "skill", QVariant::fromValue( *pSkills) );
+                lPassiveSkills.push_back( QVariant::fromValue( lSkills ) );
             }
             return QVariant::fromValue( lPassiveSkills );
         }
@@ -81,12 +83,22 @@ namespace d3cplus
         {
             QString strReturn;
 
-//            strReturn   += "\nCompleted Quests : \n{ ";
-//            foreach( D3_Quest* pQuest, m_lpCompletedQuests )
-//            {
-//                strReturn += "\n\t" + pQuest->toString() + ";";
-//            }
-//            strReturn   += "\n}";
+            strReturn   += "\nActiveSkill : \n{ ";
+            foreach( D3_ActiveSkill ActiveSkill, m_lpActiveSkills )
+            {
+                strReturn += "\n\t{";
+                strReturn += "\n\t" + ActiveSkill.first->toString() + ";";
+                strReturn += "\n\t" + ActiveSkill.second->toString() + ";";
+                strReturn += "\n\t}";
+            }
+            strReturn   += "\n}";
+
+            strReturn   += "\nPassiveSkill : \n{ ";
+            foreach( D3_Skill* pPassiveSkill, m_lpPassiveSkills )
+            {
+                strReturn += "\n\t" + pPassiveSkill->toString() + ";";
+            }
+            strReturn   += "\n}";
 
             return strReturn;
         }

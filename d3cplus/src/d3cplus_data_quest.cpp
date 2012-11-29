@@ -35,7 +35,7 @@ namespace d3cplus
 
         D3_Quest& D3_Quest::operator=( const D3_Quest& _rD3_Quest )
         {
-            Q_ASSERT( m_strClassName == _rD3_Questes.getType() );
+            Q_ASSERT( m_strClassName == _rD3_Quest.getType() );
             m_strSlug = _rD3_Quest.getSlug();
             return *this;
         }

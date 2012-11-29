@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     qDebug()<<"ssdfsdf";
 
     d3cplus::d3cplus_Engine* pEngine = new d3cplus::d3cplus_Engine();
-    pEngine->getCareerProfileFromBattleTag( "MothyV", 1261, d3cplus::d3cplus_Engine::E_Reg_Europe );
+    pEngine->getHeroesInfoFromBattleTag( 4912155, "MothyV", 1261, d3cplus::d3cplus_Engine::E_Reg_Europe );
 
     return a.exec();
 }

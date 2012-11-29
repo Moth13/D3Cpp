@@ -48,7 +48,8 @@ HEADERS += \
     include/d3cplus_data_progression.h \
     include/d3cplus_data_difficulty.h \
     include/d3cplus_data_skill.h \
-    include/d3cplus_data_skill_container.h
+    include/d3cplus_data_skill_container.h \
+    include/d3cplus_data_item.h
 
 SOURCES += \
     src/d3cplus_data.cpp \
@@ -62,7 +63,8 @@ SOURCES += \
     src/d3cplus_data_difficulty.cpp \
     src/d3cplus_data_progression.cpp \
     src/d3cplus_data_skill.cpp \
-    src/d3cplus_data_skill_container.cpp
+    src/d3cplus_data_skill_container.cpp \
+    src/d3cplus_data_item.cpp
 
 
 target_lib.files= ./resources/lib/*.so*
@@ -72,6 +74,10 @@ target_inc.files+= ./include/*
 target_inc.path = $$INSTALL_DIR/include/
 INSTALLS        += target_lib
 INSTALLS        += target_inc
+
+
+
+
 
 
 

@@ -59,10 +59,7 @@ namespace d3cplus
                               + ".battle.net/api/d3/profile/"
                               + _rstrBattleTag + "-" + QString::number( _uiBattleNumber ) + "/" ) );
 
-
-        qDebug() << strRegion
-                    + ".battle.net/api/d3/profile/"
-                    + _rstrBattleTag + "-" + QString::number( _uiBattleNumber ) + "/";
+        qDebug() << request.url().toString();
 
         pReply = m_pNetworkManager->get( request );
 
@@ -72,9 +69,42 @@ namespace d3cplus
         return uiQueryId;
     }
 
-    uint d3cplus_Engine::getHeroesInfoFromBattleTag( const QString& _rstrHeroesName, const QString& _rstrBattleTag, uint _uiBattleNumber, eRegion _eRegion )
+    uint d3cplus_Engine::getHeroesInfoFromBattleTag( int _iHeroID, const QString& _rstrBattleTag, uint _uiBattleNumber, eRegion _eRegion )
     {
-        return 0;
+        QString strRegion;
+        switch( _eRegion )
+        {
+            case E_Reg_America :
+                strRegion = "us";
+            break;
+            case E_Reg_Europe :
+                strRegion = "eu";
+            break;
+            case E_Reg_Asia :
+                strRegion = "asia";
+            break;
+            default :
+            break;
+        }
+
+        QNetworkRequest request;
+        QNetworkReply* pReply = NULL;
+
+        request.setRawHeader( "Accept","application/json" );
+        request.setUrl( QUrl( "http://"
+                              + strRegion
+                              + ".battle.net/api/d3/profile/"
+                              + _rstrBattleTag + "-" + QString::number( _uiBattleNumber )
+                              + "/hero/" + QString::number( _iHeroID ) ) );
+
+        qDebug() << request.url().toString();
+
+        pReply = m_pNetworkManager->get( request );
+
+        uint uiQueryId = qHash( _rstrBattleTag + "-" + QString::number( _uiBattleNumber ) );
+        m_mQuery.insert( pReply, PQT( uiQueryId, 1 ) );
+
+        return uiQueryId;
     }
 
     void d3cplus_Engine::onNetworkManagerReply( QNetworkReply* _pReply )
@@ -92,16 +122,27 @@ namespace d3cplus
                 if( bOk )
                 {
                     Data::D3_Career* pCareer = new Data::D3_Career();
-                    qv2o( res.toMap(), pCareer );
                     QJson::QObjectHelper::qvariant2qobject( res.toMap(), pCareer );
                     qDebug() << pCareer->toString();
 
                     qDebug( "parsing success" );
+                }
+                else
+                {
+                    qDebug( "parsing failed" );
+                }
+            }
+            break;
+            case 1 :
+            {
+                QVariant res = parser.parse( _pReply->readAll(), &bOk );
+                if( bOk )
+                {
+                    Data::D3_Hero* pHero = new Data::D3_Hero();
+                    QJson::QObjectHelper::qvariant2qobject( res.toMap(), pHero );
+                    qDebug() << pHero->toString();
 
-                    QVariantMap variant = QJson::QObjectHelper::qobject2qvariant( pCareer );
-                    QJson::Serializer seria;
-                    qDebug( "try to json" );
-                    qDebug() << seria.serialize( variant );
+                    qDebug( "parsing success" );
                 }
                 else
                 {
@@ -110,44 +151,8 @@ namespace d3cplus
             }
             break;
             default :
+                qDebug( "case not handle!" );
             break;
-        }
-    }
-
-    void d3cplus_Engine::qv2o(const QVariantMap& variant, QObject* object)
-    {
-        const QMetaObject *metaobject = object->metaObject();
-
-        QVariantMap::const_iterator iter;
-        for( iter = variant.constBegin(); iter != variant.constEnd(); ++iter)
-        {
-            qDebug() << iter.key().toAscii();
-            int pIdx = metaobject->indexOfProperty( iter.key().toAscii() );
-
-            if ( pIdx < 0 )
-            {
-                continue;
-            }
-
-            QMetaProperty metaproperty = metaobject->property( pIdx );
-            QVariant::Type type = metaproperty.type();
-            qDebug() << "Type : " << type;
-            QVariant v( iter.value() );
-            if ( v.canConvert( type ) )
-            {
-                qDebug() << "Can convert1";
-                v.convert( type );
-                metaproperty.write( object, v );
-            }
-            else if (QString(QLatin1String("QVariant")).compare(QLatin1String(metaproperty.typeName())) == 0)
-            {
-                qDebug() << "Can convert2";
-                metaproperty.write( object, v );
-            }
-            else
-            {
-                qDebug() << "Can't convert";
-            }
         }
     }
 }

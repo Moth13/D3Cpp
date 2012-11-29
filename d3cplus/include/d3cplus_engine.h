@@ -36,7 +36,7 @@ namespace d3cplus
             /*!  */
             uint getCareerProfileFromBattleTag( const QString& _rstrBattleTag, uint _uiBattleNumber, eRegion _eRegion );
             /*! */
-            uint getHeroesInfoFromBattleTag( const QString& _rstrHeroesName, const QString& _rstrBattleTag, uint _uiBattleNumber, eRegion _eRegion );
+            uint getHeroesInfoFromBattleTag( int _iHeroID, const QString& _rstrBattleTag, uint _uiBattleNumber, eRegion _eRegion );
             //------------------------------------------------------//
 
         signals :
@@ -70,7 +70,6 @@ namespace d3cplus
 
             //------------------------------------------------------//
             // Tools
-            void qv2o(const QVariantMap& variant, QObject* object);
             //------------------------------------------------------//
         private slots :
             //------------------------------------------------------//

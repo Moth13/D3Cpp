@@ -1,6 +1,8 @@
 #include <d3cplus_data_hero.h>
 
 #include <d3cplus_data_skill_container.h>
+#include <d3cplus_data_stats.h>
+#include <d3cplus_data_item.h>
 
 #include <resources/include/parser.h>
 #include <resources/include/qobjecthelper.h>
@@ -9,16 +11,33 @@ namespace d3cplus
 {
     namespace Data
     {
+        QStringList lstrItemsKey= QStringList() << "head"
+                                                << "torso"
+                                                << "feet"
+                                                << "hands"
+                                                << "shoulders"
+                                                << "legs"
+                                                << "bracers"
+                                                << "waist"
+                                                << "mainHand"
+                                                << "offHand"
+                                                << "rightFinger"
+                                                << "leftFinger"
+                                                << "neck"
+                                                << "special";
+
         //----------------------------------//
         D3_Hero::D3_Hero( QObject* parent )
             :   D3_Data             ( parent )
             ,   m_pSkillContainer   ( NULL )
+            ,   m_pStats            ( NULL )
         {
             m_strClassName = "D3_Heroes";
         }
         D3_Hero::D3_Hero( const D3_Hero& _rD3_Heroes )
             :   D3_Data             ( _rD3_Heroes.parent() )
             ,   m_pSkillContainer   ( NULL )
+            ,   m_pStats            ( NULL )
         {
             m_strClassName  = "D3_Heroes";
             m_strName       = _rD3_Heroes.getName();
@@ -29,6 +48,12 @@ namespace d3cplus
             {
                 delete m_pSkillContainer;
             }
+            if( NULL != m_pStats )
+            {
+                delete m_pStats;
+            }
+
+            clearItems();
         }
 
         // setFunction
@@ -51,6 +76,44 @@ namespace d3cplus
             m_pSkillContainer = new D3_Skill_Container();
             QJson::QObjectHelper::qvariant2qobject( _skills.toMap(), m_pSkillContainer );
         }
+        void D3_Hero::setStats( QVariant _stats )
+        {
+            if( NULL != m_pStats )
+            {
+                delete m_pStats;
+            }
+
+            m_pStats = new D3_Stats();
+            QJson::QObjectHelper::qvariant2qobject( _stats.toMap(), m_pStats );
+        }        
+        void D3_Hero::setItems( QVariant _items )
+        {
+            clearItems();
+
+            QVariantMap mItems = _items.toMap();
+            if( !mItems.contains( lstrItemsKey[ e_Item_Special ] ) )
+            {
+                for( uint i = e_Item_Head; i<e_Item_MainHand; ++i )
+                {
+                    D3_Item* pItem = new D3_Item();
+                    QJson::QObjectHelper::qvariant2qobject( mItems[ lstrItemsKey[ i ] ].toMap(), pItem );
+                    m_hItems.insert( i, pItem );
+                }
+            }
+            else
+            {
+                D3_Item* pItem = new D3_Item();
+                QJson::QObjectHelper::qvariant2qobject( mItems[ lstrItemsKey[ e_Item_Special ] ].toMap(), pItem );
+                m_hItems.insert( e_Item_Special, pItem );
+            }
+
+            for( uint i = e_Item_MainHand; i<e_Item_Special; ++i )
+            {
+                D3_Item* pItem = new D3_Item();
+                QJson::QObjectHelper::qvariant2qobject( mItems[ lstrItemsKey[ i ] ].toMap(), pItem );
+                m_hItems.insert( i, pItem );
+            }
+        }
 
         // getFunction
         const QString& D3_Hero::getName() const { return m_strName; }
@@ -66,10 +129,49 @@ namespace d3cplus
         {
             return QVariant::fromValue( *m_pSkillContainer );
         }
-
         const D3_Skill_Container& D3_Hero::getSkillContainer() const
         {
             return *m_pSkillContainer;
+        }
+        QVariant D3_Hero::getStatsAsQVariant() const
+        {
+            return QVariant::fromValue( *m_pStats );
+        }
+        const D3_Stats& D3_Hero::getStats() const
+        {
+            return *m_pStats;
+        }        
+        QVariant D3_Hero::getItemsAsQVariant() const
+        {
+            QMap< QString, QVariant > items;
+
+            if( NULL == m_hItems[ e_Item_Special ] )
+            {
+                items.insert( lstrItemsKey[ e_Item_Head ], QVariant::fromValue( *m_hItems[ e_Item_Head ] ) );
+                items.insert( lstrItemsKey[ e_Item_Torso ], QVariant::fromValue( *m_hItems[ e_Item_Torso ] ) );
+                items.insert( lstrItemsKey[ e_Item_Feet ], QVariant::fromValue( *m_hItems[ e_Item_Feet ] ) );
+                items.insert( lstrItemsKey[ e_Item_Hands ], QVariant::fromValue( *m_hItems[ e_Item_Hands ] ) );
+                items.insert( lstrItemsKey[ e_Item_Shoulders ], QVariant::fromValue( *m_hItems[ e_Item_Shoulders ] ) );
+                items.insert( lstrItemsKey[ e_Item_Legs ], QVariant::fromValue( *m_hItems[ e_Item_Legs ] ) );
+                items.insert( lstrItemsKey[ e_Item_Bracers ], QVariant::fromValue( *m_hItems[ e_Item_Bracers ] ) );
+                items.insert( lstrItemsKey[ e_Item_Waist ], QVariant::fromValue( *m_hItems[ e_Item_Waist ] ) );
+            }
+            else
+            {
+                items.insert( lstrItemsKey[ e_Item_Special ], QVariant::fromValue( *m_hItems[ e_Item_Special ] ) );
+            }
+
+            items.insert( lstrItemsKey[ e_Item_MainHand ], QVariant::fromValue( *m_hItems[ e_Item_MainHand ] ) );
+            items.insert( lstrItemsKey[ e_Item_OffHand ], QVariant::fromValue( *m_hItems[ e_Item_OffHand ] ) );
+            items.insert( lstrItemsKey[ e_Item_RightFinger ], QVariant::fromValue( *m_hItems[ e_Item_RightFinger ] ) );
+            items.insert( lstrItemsKey[ e_Item_LeftFinger ], QVariant::fromValue( *m_hItems[ e_Item_LeftFinger ] ) );
+            items.insert( lstrItemsKey[ e_Item_Neck ], QVariant::fromValue( *m_hItems[ e_Item_Neck ] ) );
+
+            return QVariant::fromValue( items );
+        }
+        const D3_Items& D3_Hero::getItems() const
+        {
+            return m_hItems;
         }
 
         // tools
@@ -87,6 +189,25 @@ namespace d3cplus
             strReturn += "; " + m_strClass;
             strReturn += "; " + QString::number( m_iLastUpdated );
 
+            if( NULL != m_pSkillContainer )
+            {
+                strReturn += "; " + m_pSkillContainer->toString();
+            }
+
+            if( NULL != m_pStats )
+            {
+                strReturn += "; " + m_pStats->toString();
+            }
+
+            strReturn   += "\nItems : \n{ ";
+            QHashIterator< uint, D3_Item* > ite( m_hItems );
+            while( ite.hasNext() )
+            {
+                ite.next();
+                strReturn += "\n\t" + ite.value()->toString() + ";";
+            }
+            strReturn   += "\n}";
+
             return strReturn;
         }
 
@@ -100,6 +221,12 @@ namespace d3cplus
         {
             return m_strClassName == _rD3_Heroes.getName();
         }
+
+        void D3_Hero::clearItems()
+        {
+
+        }
+
         //----------------------------------//
     }
 }
